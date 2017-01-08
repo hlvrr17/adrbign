@@ -1,5 +1,7 @@
 package org.lhvu.home.criminalintent;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,8 +20,10 @@ import java.util.List;
  * Created by Hung on 18/12/2016.
  */
 public class CrimeListFragment extends Fragment {
+    private static final int REQUEST_CRIME = 1;
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    private int mChangedPosition = -1;
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private  TextView mTitleTextView;
@@ -46,11 +50,11 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(),
-                    mCrime.getTitle()+ "  clicked!", Toast.LENGTH_SHORT)
-                    .show();
+            Intent intent = CrimeActivity.newItent(getActivity(), mCrime.getId());
+            startActivityForResult(intent, REQUEST_CRIME);
         }
     }
+
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder> {
         private List<Crime> mCrimes;
 
@@ -90,11 +94,30 @@ public class CrimeListFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CRIME && resultCode == Activity.RESULT_OK){
+            mChangedPosition  = data.getIntExtra(CrimeActivity.CHANGED_POSITION, -1);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.updateUI();
+    }
+
     private void updateUI() {
         CrimeLab lab = CrimeLab.get(getActivity());
         List<Crime> crimes = lab.getCrimes();
-        mAdapter = new CrimeAdapter(crimes);
-        mCrimeRecyclerView.setAdapter(mAdapter);
+        if (mAdapter == null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        } else {
+            if (mChangedPosition != -1) {
+                mAdapter.notifyItemChanged(mChangedPosition);
+            }
+        }
     }
 
 }

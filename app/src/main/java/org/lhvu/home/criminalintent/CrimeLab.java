@@ -19,11 +19,24 @@ public class CrimeLab {
 
     public Crime getCrime(UUID id) {
         for(Crime crime: mCrimes) {
-            if (crime.getId() == id ) {
+            //id could be serialized so wrong to compare object
+            if (crime.getId().toString().equals(id.toString())) {
                 return crime;
             }
         }
         return null;
+    }
+
+
+    public int getPosition(UUID id) {
+        for(int i = 0; i< mCrimes.size(); i++) {
+            Crime crime = mCrimes.get(i);
+            //id could be serialized so wrong to compare object
+            if (crime.getId().toString().equals(id.toString())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private List<Crime> mCrimes;
