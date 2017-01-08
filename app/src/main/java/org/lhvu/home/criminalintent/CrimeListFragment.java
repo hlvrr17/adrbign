@@ -30,9 +30,11 @@ public class CrimeListFragment extends Fragment {
 
         public CrimeHolder(View itemView){
             super(itemView);
+            itemView.setOnClickListener(this);
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_crime_title);
             mDateTextView = (TextView) itemView.findViewById(R.id.list_item_crime_date);
             mSolvedCheckBox = (CheckBox) itemView.findViewById(R.id.list_item_solved_checkbox);
+            mSolvedCheckBox.setOnClickListener(this);
         }
 
         public void bindCrime(Crime crime) {
