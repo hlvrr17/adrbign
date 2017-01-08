@@ -31,6 +31,8 @@ public class Crime {
 
     public Crime() {
         mId = UUID.randomUUID();
+        mDate = new Date();
+        mSolved = false;
     }
 
     public String getTitle() {
